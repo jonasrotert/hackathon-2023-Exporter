@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -79,7 +80,9 @@ public class IndexController {
     @GetMapping("${url.index}")
     public String index(@RequestParam(value = "directUrl", required = false) final Boolean directUrl,
                         final Model model) {
-        java.io.File[] files = storageMutator.getStoredFiles();  // get all the stored files from the storage
+        File[] files = storageMutator.getStoredFiles();  // get all the stored files from the storage
+
+        List<String> fileNames = new ArrayList<>();
         List<String> docTypes = new ArrayList<>();
         List<Boolean> filesEditable = new ArrayList<>();
         List<String> versions = new ArrayList<>();
@@ -100,8 +103,9 @@ public class IndexController {
                         user.getDescriptions()))  // convert user descriptions to the specified format
                 .collect(Collectors.joining());
 
-        for (java.io.File file:files) {  // run through all the files
+        for (File file:files) {  // run through all the files
             String fileName = file.getName();  // get file name
+            fileNames.add(fileName);
             docTypes.add(fileUtility
                     .getDocumentType(fileName)
                     .toString()
@@ -117,6 +121,7 @@ public class IndexController {
         model.addAttribute("isFillFormDoc", isFillFormDoc);
         model.addAttribute("versions", versions);
         model.addAttribute("files", files);
+        model.addAttribute("fileNames", fileNames);
         model.addAttribute("docTypes", docTypes);
         model.addAttribute("filesEditable", filesEditable);
         model.addAttribute("datadocs", docserviceSite + docservicePreloader);
