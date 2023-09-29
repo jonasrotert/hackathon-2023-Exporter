@@ -19,6 +19,7 @@ services:
         working_dir: /java-spring
         volumes:
             - .:/java-spring
+            - ./config/application.properties:/etc/java-spring/application.properties
         ports: 
             - "8080:8080"
             - "35729:35729"
